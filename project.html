@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>فكرتي | ملف المشروع</title>
+  <style>
+    :root{--brown:#6e4e37;--sand:#c2a782;--light:#faf8f5;--ink:#1e1e1e;--radius:16px;--shadow:0 10px 25px rgba(0,0,0,.08)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Cairo",sans-serif;background:linear-gradient(160deg,#fff,var(--light) 40%,#f4efe9 100%);color:var(--ink);overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+
+    /* ===== Header موحّد ===== */
+    header{position:sticky;top:0;z-index:100;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+    .nav-container{max-width:1200px;margin:auto;padding:12px 25px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .main-logo{width:220px;height:auto;transition:.3s}
+    .main-logo:hover{transform:scale(1.05)}
+    nav{flex:1 1 auto;min-width:0}
+    nav ul{display:flex;gap:28px;list-style:none;align-items:center;justify-content:flex-end}
+    nav li{flex:0 0 auto}
+    nav a{color:var(--brown);font-weight:700;transition:.25s;white-space:nowrap}
+    nav a:hover, nav a.active{color:#b17d57}
+
+    /* زر القائمة + درج (بين 560 و 860) */
+    #menuToggle{
+      display:none;border:1px solid #eadfce;background:#fff;color:#6e4e37;
+      padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer
+    }
+    #navOverlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.35);
+      opacity:0;pointer-events:none;transition:.2s;z-index:9998
+    }
+    #navOverlay.show{opacity:1;pointer-events:auto}
+
+    @media (max-width:860px){
+      #menuToggle{display:inline-block}
+      .main-logo{width:180px}
+      header nav ul{
+        position:fixed; inset:64px 0 0 auto; width:88%; max-width:360px; background:#fff;
+        box-shadow:0 20px 50px rgba(0,0,0,.18); padding:18px;
+        border-top-left-radius:16px; border-bottom-left-radius:16px;
+        display:flex; flex-direction:column; gap:14px;
+        transform:translateX(110%); transition:transform .25s ease; z-index:9999
+      }
+      header nav ul.open{ transform:none }
+    }
+
+    /* ===== إجبار سطر واحد واضح ≤560px (بدون درج) ===== */
+    @media (max-width:560px){
+      header{margin:6px}
+      .nav-container{padding:8px 10px;gap:8px}
+      .main-logo{width:clamp(92px,28vw,120px)}
+      /* عطّل الدرج تماماً */
+      #menuToggle{display:none !important}
+      #navOverlay{display:none !important}
+      header nav ul{
+        position:static !important; inset:auto !important; width:auto !important;
+        max-width:none !important; background:transparent !important; box-shadow:none !important;
+        padding:0 !important; border-radius:0 !important; flex-direction:row !important;
+        gap:6px; flex-wrap:nowrap; overflow:hidden; transform:none !important
+      }
+      nav a{
+        /* كل الروابط نفس الحجم وواضحة */
+        font-size:clamp(11px,2.9vw,12.5px);
+        font-weight:800; letter-spacing:-.1px; line-height:1
+      }
+    }
+
+    /* ===== Hero ===== */
+    .hero{background:linear-gradient(90deg,var(--brown),var(--sand));color:#fff;padding:56px 20px 28px;text-align:center;box-shadow:var(--shadow)}
+    .hero .wrap{max-width:1050px;margin:auto}
+    .title{font-size:clamp(24px,3.2vw,36px);font-weight:900;margin-bottom:6px}
+    .subtitle{opacity:.95}
+    .hero-actions{margin-top:14px;display:flex;justify-content:center}
+    .back-btn{
+      background:#fff;color:#5b3d2d;border:none;border-radius:999px;
+      padding:10px 16px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.12);
+      display:inline-flex;gap:8px;align-items:center;transition:.2s
+    }
+    .back-btn:hover{filter:brightness(.96);transform:translateY(-1px)}
+
+    /* ===== Layout ===== */
+    .container{max-width:1050px;margin:26px auto 90px;padding:0 18px}
+    .main-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-top:-24px}
+    .cover{width:100%;height:320px;border-radius:14px;background:#eee;margin-bottom:16px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#aaa}
+    .cover img{width:100%;height:100%;object-fit:cover;display:block}
+
+    .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+    .meta .m{background:#fff;border:1px solid #eadfce;border-radius:12px;padding:10px 12px}
+    .m b{color:var(--brown);display:block;margin-bottom:4px}
+
+    /* ===== Sections ===== */
+    .section{margin-top:26px}
+    .sec-title{color:var(--brown);font-size:20px;font-weight:800;margin-bottom:8px}
+    .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+    .desc{color:#333;line-height:1.95}
+    .twocol{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .chip{background:#fff;border:1px solid #eadfce;color:#6e4e37;border-radius:999px;padding:6px 10px;font-size:12px}
+
+    /* Floating back (mobile) */
+    .fab-back{
+      position:fixed;left:16px;bottom:16px;z-index:150;
+      background:#fff;border:1px solid #eadfce;color:#5b3d2d;border-radius:999px;
+      padding:10px 14px;font-weight:900;box-shadow:0 10px 22px rgba(0,0,0,.12);
+      display:flex;align-items:center;gap:8px
+    }
+    .fab-back:hover{background:#f9f3ed}
+
+    footer{background:#f8f5f2;text-align:center;padding:25px 15px;border-top:1px solid #ddd;color:#5e4b3c;font-size:14px;margin-top:40px}
+    footer strong{color:var(--brown)}
+    @media (max-width:768px){.cover{height:240px}}
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="nav-container">
+    <a href="index.html"><img src="assets/svg/logo-Kittl.svg" class="main-logo" alt="شعار فكرتي" /></a>
+    <button id="menuToggle" type="button" aria-expanded="false" aria-controls="siteNav">القائمة</button>
+    <nav>
+      <ul id="siteNav">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="projects.html" class="active">المشاريع</a></li>
+        <li><a href="inspirers.html">الملهمين</a></li>
+        <li><a href="services.html">خدماتنا</a></li>
+        <li><a href="about.html">من نحن</a></li>
+        <li><a href="contact.html">تواصل معنا</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div id="navOverlay"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="wrap">
+    <h1 class="title" id="pTitle">—</h1>
+    <p class="subtitle" id="pSub">—</p>
+    <div class="hero-actions">
+      <button class="back-btn" id="backTop" aria-label="الرجوع إلى قائمة المشاريع">← الرجوع لقائمة المشاريع</button>
+    </div>
+  </div>
+</section>
+
+<!-- Content -->
+<div class="container">
+  <article class="main-card">
+    <div class="cover" id="pCover"><span>لا توجد صورة</span></div>
+    <div class="meta">
+      <div class="m"><b>المشرف</b><span id="pSupervisor">—</span></div>
+      <div class="m"><b>الأعضاء</b><span id="pMembers">—</span></div>
+      <div class="m"><b>السنة</b><span id="pYear">—</span></div>
+      <div class="m"><b>الحالة</b><span id="pStatus">—</span></div>
+    </div>
+  </article>
+
+  <section class="section">
+    <h3 class="sec-title">تفاصيل المشروع</h3>
+    <div class="twocol">
+      <div class="card">
+        <p id="pDetails" class="desc">—</p>
+        <div class="links" id="pLinks" style="display:none"></div>
+      </div>
+      <div class="card" id="stepsCard" style="display:none">
+        <ul id="pSteps" style="padding-inline-start:18px"></ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- زر عائم للجوال -->
+<button class="fab-back" id="backFab" aria-label="رجوع">← رجوع</button>
+
+<footer>
+  <p>© 2025 منصة <strong>فكرتي</strong> — تم التطوير بواسطة <strong>م. عبدالله أيمن اليوبي</strong></p>
+</footer>
+
+<script>
+/* ===== هيدر: زر القائمة + درج (560–860) وتعطيل ≤560 ===== */
+(function(){
+  const btn  = document.getElementById('menuToggle');
+  const list = document.getElementById('siteNav');
+  const ovl  = document.getElementById('navOverlay');
+
+  function openNav(){ list.classList.add('open'); ovl.classList.add('show'); btn.setAttribute('aria-expanded','true'); document.body.classList.add('no-scroll'); }
+  function closeNav(){ list.classList.remove('open'); ovl.classList.remove('show'); btn.setAttribute('aria-expanded','false'); document.body.classList.remove('no-scroll'); }
+
+  function drawerEnabled(){ return window.matchMedia('(min-width: 561px) and (max-width: 860px)').matches; }
+
+  if(btn && list && ovl){
+    btn.addEventListener('click', ()=> drawerEnabled() && (list.classList.contains('open') ? closeNav() : openNav()));
+    ovl.addEventListener('click', closeNav);
+    list.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeNav));
+    window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeNav(); });
+    window.addEventListener('resize', ()=>{ if(!drawerEnabled()) closeNav(); });
+  }
+})();
+
+/* ===== صفحة المشروع ===== */
+const p = JSON.parse(localStorage.getItem("selectedProject")||"null");
+const text = v => (v && String(v).trim()!=="") ? v : "—";
+
+function goBack(){
+  const ref = document.referrer || "";
+  if (/projects\.html/i.test(ref)) { location.href = 'projects.html'; return; }
+  if (history.length > 1) { history.back(); return; }
+  location.href = 'projects.html';
+}
+document.getElementById('backTop').onclick = goBack;
+document.getElementById('backFab').onclick = goBack;
+window.addEventListener('keydown', (e)=>{ if ((e.altKey && e.key==='ArrowLeft') || e.key==='Escape'){ e.preventDefault(); goBack(); } });
+
+function addChip(parent, label, href){
+  const s = document.createElement('a');
+  s.className = 'chip'; s.textContent = label;
+  if(href){ s.href = href; s.target = '_blank'; s.rel = 'noopener'; }
+  parent.appendChild(s);
+}
+
+(function init(){
+  if(!p){
+    document.querySelector('.container').innerHTML =
+      "<p style='padding:20px;background:#fff;border-radius:12px;box-shadow:var(--shadow)'>❌ لم يتم العثور على بيانات المشروع.</p>";
+    document.getElementById('pTitle').textContent = 'بيانات غير متاحة';
+    document.getElementById('pSub').textContent   = '—';
+    return;
+  }
+
+  const title = text(p.title || p.name);
+  document.title = "فكرتي | " + title;
+  document.getElementById('pTitle').textContent = title;
+  document.getElementById('pSub').textContent   = `${text(p.status)} • ${text(p.year)}`;
+
+  // غلاف
+  const cover = document.getElementById('pCover');
+  cover.innerHTML = "";
+  if(p.img && String(p.img).trim()!==""){
+    const img=new Image(); img.src=p.img; img.loading="lazy"; img.alt=title;
+    cover.appendChild(img);
+  } else {
+    cover.innerHTML = "<span>لا توجد صورة</span>";
+  }
+
+  // ميتاداتا
+  document.getElementById('pSupervisor').textContent = text(p.supervisor);
+  const members = Array.isArray(p.members) ? p.members.join("، ") : p.members;
+  document.getElementById('pMembers').textContent    = text(members);
+  document.getElementById('pYear').textContent       = text(p.year);
+  document.getElementById('pStatus').textContent     = text(p.status);
+
+  // التفاصيل
+  document.getElementById('pDetails').textContent = text(p.details || p.desc || p.idea);
+
+  // خطوات / منهجية (اختياري)
+  const steps = Array.isArray(p.steps || p.methods) ? (p.steps || p.methods) : [];
+  if(steps.length){
+    const ul = document.getElementById('pSteps');
+    steps.forEach(s=>{ const li=document.createElement('li'); li.textContent=s; ul.appendChild(li); });
+    document.getElementById('stepsCard').style.display = 'block';
+  }
+
+  // روابط (اختياري)
+  const linksWrap = document.getElementById('pLinks');
+  const links = [];
+  if (Array.isArray(p.links)) links.push(...p.links);
+  if (p.github) links.push({label:'GitHub', url:p.github});
+  if (p.demo)   links.push({label:'Demo',   url:p.demo});
+  if (p.pdf)    links.push({label:'PDF',    url:p.pdf});
+
+  if (links.length){
+    linksWrap.style.display = 'flex';
+    links.forEach(l=> addChip(linksWrap, l.label || l.url, l.url));
+  }
+})();
+</script>
+</body>
+</html>

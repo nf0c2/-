@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>فكرتي | ملف الملهم</title>
+  <style>
+    :root{
+      --brown:#6e4e37; --sand:#c2a782; --light:#faf8f5; --ink:#1e1e1e;
+      --radius:16px; --shadow:0 10px 25px rgba(0,0,0,.08);
+
+      /* متغيرات تلاؤم الهيدر للموبايل (يضبطها السكربت) */
+      --logo-w:220px; --nav-gap:28px; --nav-fs:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Cairo",sans-serif;background:linear-gradient(160deg,#fff,var(--light) 40%,#f4efe9 100%);color:#222;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+
+    /* ===== Header موحّد (Sticky) ===== */
+    header{position:sticky;top:0;z-index:100;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+    .nav-container{max-width:1200px;margin:auto;padding:12px 25px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .main-logo{width:220px;height:auto;transition:.3s;flex:0 0 auto}
+    .main-logo:hover{transform:scale(1.05)}
+    nav{flex:1 1 auto;min-width:0}
+    nav ul{display:flex;gap:28px;list-style:none;align-items:center;justify-content:flex-end;flex-wrap:nowrap}
+    nav a{color:var(--brown);font-weight:600;transition:.25s;white-space:nowrap}
+    nav a:hover, nav a.active{color:#b17d57}
+
+    /* زر ودرج للجوال بين 560–860px */
+    #menuToggle{
+      display:none;border:1px solid #eadfce;background:#fff;color:#6e4e37;
+      padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer
+    }
+    @media (max-width:860px) and (min-width:561px){
+      #menuToggle{ display:inline-block; margin-inline-start:10px }
+      header nav ul{
+        position:fixed; inset:64px 0 0 auto; width:88%; max-width:360px; background:#fff;
+        box-shadow:0 20px 50px rgba(0,0,0,.18); padding:18px;
+        border-top-left-radius:16px; border-bottom-left-radius:16px;
+        display:flex; flex-direction:column; gap:14px;
+        transform:translateX(110%); transition:transform .25s ease; z-index:9999
+      }
+      header nav ul.open{ transform:none }
+      body.no-scroll{ overflow:hidden }
+    }
+
+    /* ≤560px: كل الروابط بسطر واحد بدون درج، ويُصغَّر الشعار/الفواصل/الخط */
+    @media (max-width:560px){
+      header .nav-container{ padding:8px 10px; gap:6px }
+      header .main-logo{ width:var(--logo-w) }
+      header nav ul{
+        position:static !important; inset:auto !important; width:auto !important; max-width:none !important;
+        background:transparent !important; box-shadow:none !important; padding:0 !important; border-radius:0 !important;
+        display:flex !important; flex-direction:row !important; gap:var(--nav-gap); flex-wrap:nowrap; overflow:visible;
+        transform:none !important;
+      }
+      #menuToggle{ display:none !important }
+      body.no-scroll{ overflow:auto !important }
+      header nav a{
+        font-size:var(--nav-fs); font-weight:800; line-height:1; letter-spacing:-.15px; padding:0; white-space:nowrap;
+      }
+    }
+
+    /* ===== Hero ===== */
+    .hero{
+      background:
+        radial-gradient(1100px 320px at 50% -40%, rgba(255,255,255,.22), transparent),
+        linear-gradient(100deg, var(--brown), var(--sand));
+      color:#fff; padding:70px 20px 54px; text-align:center; box-shadow:var(--shadow)
+    }
+    .wrap{max-width:1150px;margin:auto;padding:0 12px}
+    .title{font-size:clamp(26px,6vw,52px);font-weight:1000;letter-spacing:.2px;text-shadow:0 10px 24px rgba(0,0,0,.15)}
+    .roleLine{margin-top:8px;opacity:.95;font-size:clamp(13px,1.8vw,18px)}
+
+    /* ===== محتوى الملف ===== */
+    .section{max-width:1150px;margin:20px auto 80px;padding:0 16px}
+    .top{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:stretch;margin-top:-36px
+    }
+    @media (max-width:980px){ .top{ grid-template-columns:1fr } }
+
+    .card{
+      background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:18px
+    }
+    .head{display:flex;gap:14px;align-items:center}
+    .ava{
+      min-width:70px;min-height:70px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;
+      background:linear-gradient(135deg,#b08968,#6e4e37);font-size:20px;overflow:hidden
+    }
+    .ava img{width:100%;height:100%;object-fit:cover;display:block}
+    .meta h1{font-size:20px;color:var(--brown);margin-bottom:4px}
+    .meta .small{color:#6b6b6b;font-size:13px}
+
+    .bio{color:#333;font-size:15px;line-height:1.9;margin-top:12px}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .tag{background:#f3ede6;color:#6e4e37;border-radius:999px;padding:5px 10px;font-size:12px}
+
+    .side .box{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+    .box h3{font-size:16px;color:var(--brown);margin-bottom:8px}
+    .btns{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      display:inline-block;background:#fff;border:1px solid #eadfce;color:#6e4e37;border-radius:12px;
+      padding:10px 14px;font-weight:800;cursor:pointer;transition:.25s;text-decoration:none
+    }
+    .btn:hover{background:#f9f3ed}
+    .pill{display:inline-block;background:#fff;border:1px solid #eadfce;color:#6e4e37;border-radius:999px;padding:6px 10px;font-size:12px}
+
+    .grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:14px
+    }
+    .feat{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:16px}
+    .feat h4{color:var(--brown);margin-bottom:6px}
+
+    .empty{
+      text-align:center;background:#fff;border-radius:16px;padding:24px;box-shadow:var(--shadow);color:#6b6b6b
+    }
+
+    /* Footer */
+    footer{background:#f8f5f2;text-align:center;padding:25px 15px;border-top:1px solid #ddd;color:#5e4b3c;font-size:14px;margin-top:70px}
+    footer strong{color:var(--brown)}
+  </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header>
+  <div class="nav-container">
+    <a href="index.html"><img src="assets/svg/logo-Kittl.svg" class="main-logo" alt="شعار فكرتي" /></a>
+    <button id="menuToggle" type="button">القائمة</button>
+    <nav>
+      <ul>
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="projects.html">المشاريع</a></li>
+        <li><a href="inspirers.html" class="active">الملهمين</a></li>
+        <li><a href="services.html">خدماتنا</a></li>
+        <li><a href="about.html">من نحن</a></li>
+        <li><a href="contact.html">تواصل معنا</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="wrap">
+    <h1 class="title" id="heroName">—</h1>
+    <div class="roleLine" id="heroRole">—</div>
+  </div>
+</section>
+
+<!-- ===== ملف الملهم ===== -->
+<section class="section" id="content">
+  <div class="top">
+    <!-- يسار: بطاقة أساسية -->
+    <article class="card">
+      <div class="head">
+        <div class="ava" id="ava"><span id="avaInit">م</span></div>
+        <div class="meta">
+          <h1 id="name">—</h1>
+          <div class="small" id="line2">—</div>
+          <div class="small" id="trackPill" style="margin-top:6px;display:none">
+            <span class="pill" id="trackTxt"></span>
+          </div>
+        </div>
+      </div>
+      <p class="bio" id="short">—</p>
+      <div class="tags" id="skills"></div>
+    </article>
+
+    <!-- يمين: تواصل / روابط / أشياء سريعة -->
+    <aside class="side">
+      <div class="box">
+        <h3>روابط</h3>
+        <div class="btns" id="linksWrap">
+          <!-- يتم توليد الأزرار حسب البيانات -->
+        </div>
+      </div>
+      <div class="box">
+        <h3>إجراءات سريعة</h3>
+        <div class="btns">
+          <a class="btn" href="inspirers.html">جميع الملهمين</a>
+          <button class="btn" type="button" id="goBack">رجوع</button>
+          <button class="btn" type="button" id="copyLink">نسخ رابط الملف</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- أقسام إضافية (اختيارية/عامة) -->
+  <div class="grid" id="extras">
+    <article class="feat">
+      <h4>عن الملهم</h4>
+      <p id="aboutTxt">لا توجد معلومات إضافية… استخدم الوصف المختصر أعلاه.</p>
+    </article>
+    <article class="feat">
+      <h4>مجالات الاهتمام</h4>
+      <p id="interestTxt">—</p>
+    </article>
+    <article class="feat">
+      <h4>آخر إضافة</h4>
+      <p id="addedTxt">—</p>
+    </article>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 منصة <strong>فكرتي</strong> — تم التطوير بواسطة <strong>م. عبدالله أيمن اليوبي</strong></p>
+</footer>
+
+<!-- ===== سكربت: تلاؤم الهيدر على ≤560px + درج 560–860px ===== -->
+<script>
+(function fitNavInit(){
+  const mq = matchMedia('(max-width:560px)');
+  const root = document.documentElement;
+  const wrap = document.querySelector('header .nav-container');
+  const list = document.querySelector('header nav ul');
+  const logo = document.querySelector('header .main-logo');
+  const btn  = document.getElementById('menuToggle');
+  if(!wrap || !list || !logo) return;
+
+  // درج بين 560–860px
+  btn?.addEventListener('click', function(){
+    list.classList.toggle('open');
+    document.body.classList.toggle('no-scroll', list.classList.contains('open'));
+  });
+  list.querySelectorAll('a').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      list.classList.remove('open'); document.body.classList.remove('no-scroll');
+    });
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ list.classList.remove('open'); document.body.classList.remove('no-scroll'); }
+  });
+  document.addEventListener('click', e=>{
+    const hdr = document.querySelector('header');
+    if(hdr && !hdr.contains(e.target)){
+      list.classList.remove('open'); document.body.classList.remove('no-scroll');
+    }
+  });
+
+  // ≤560px: صِغ الشعار/الفواصل/الخط ليلفّ الكل بسطر واحد
+  const set = (k,v)=> root.style.setProperty(k,v);
+  function fit(){
+    if(!mq.matches){
+      set('--logo-w','220px'); set('--nav-gap','28px'); set('--nav-fs','14px');
+      return;
+    }
+    let logoW = 140, gap = 10, fs = 12;    // بدايات متحفظة
+    set('--logo-w', logoW+'px');
+    set('--nav-gap', gap+'px');
+    set('--nav-fs',  fs+'px');
+
+    const max = wrap.clientWidth - 6;      // هامش أمان
+    const fits = ()=> (logoW + list.scrollWidth) <= max;
+
+    let tries = 0;
+    while(!fits() && tries < 80){
+      if(logoW > 96){ logoW -= 4; set('--logo-w', logoW+'px'); tries++; continue; }
+      if(gap   >  4){ gap   -= 1; set('--nav-gap', gap+'px');  tries++; continue; }
+      if(fs    >  9){ fs    -= .25; set('--nav-fs', fs+'px');  tries++; continue; }
+      break;
+    }
+  }
+  addEventListener('load', fit, {once:true});
+  addEventListener('resize', fit);
+  setTimeout(fit, 0);
+})();
+</script>
+
+<!-- ===== سكربت: تحميل بيانات الملهم من localStorage ===== -->
+<script>
+(function(){
+  const data = (()=>{ try{ return JSON.parse(localStorage.getItem('selectedMentor')||'null'); }catch{ return null } })();
+  const $ = id => document.getElementById(id);
+
+  function fallback(){
+    const c = $('content');
+    c.innerHTML = `
+      <div class="empty">
+        لا يوجد ملف ملهم محدد. <br><br>
+        <a class="btn" href="inspirers.html">العودة إلى قائمة الملهمين</a>
+      </div>`;
+  }
+
+  if(!data){ fallback(); return; }
+
+  // بطل الصفحة
+  $('heroName').textContent = data.name || '—';
+  $('heroRole').textContent = [data.role || '', data.college ? ' • '+data.college : ''].join('');
+
+  $('name').textContent = data.name || '—';
+  $('line2').textContent = [data.role || '', data.college ? ' • '+data.college : ''].join('');
+  if(data.track){
+    $('trackTxt').textContent = data.track;
+    $('trackPill').style.display = '';
+  }
+
+  const short = data.short || '';
+  $('short').textContent = short || '—';
+
+  // الصورة / الأحرف
+  if(data.img && String(data.img).trim() !== ''){
+    $('ava').innerHTML = '<img alt="صورة الملهم">';
+    $('ava').querySelector('img').src = data.img;
+  }else{
+    const initials = data.initials || (data.name ? data.name.split(' ').map(w=>w[0]).join('').slice(0,2) : 'م');
+    $('avaInit').textContent = initials || 'م';
+  }
+
+  // مهارات
+  const skillsWrap = $('skills');
+  (data.skills||[]).slice(0,12).forEach(s=>{
+    const el = document.createElement('span'); el.className='tag'; el.textContent = s;
+    skillsWrap.appendChild(el);
+  });
+
+  // روابط
+  const links = [];
+  if(data.linkedin){
+    const href = data.linkedin.startsWith('http') ? data.linkedin
+              : (data.linkedin.startsWith('/in/') ? 'https://www.linkedin.com'+data.linkedin
+              : 'https://www.linkedin.com/in/'+data.linkedin.replace(/^@/,''));
+    links.push({txt:'LinkedIn', href});
+  }
+  if(data.github){
+    const handle = String(data.github).replace(/^@/,'');
+    const href = data.github.startsWith('http') ? data.github : ('https://github.com/'+handle);
+    links.push({txt:'GitHub', href});
+  }
+  const lw = document.getElementById('linksWrap');
+  if(links.length){
+    links.forEach(l=>{
+      const a = document.createElement('a');
+      a.className='btn'; a.href=l.href; a.target='_blank'; a.rel='noopener';
+      a.textContent = l.txt;
+      lw.appendChild(a);
+    });
+  }else{
+    lw.innerHTML = '<span class="pill">لا روابط مُضافة</span>';
+  }
+
+  // إضافات بسيطة/معلومات
+  document.getElementById('aboutTxt').textContent = short || '—';
+  document.getElementById('interestTxt').textContent = (data.skills||[]).slice(0,6).join(' • ') || '—';
+  document.getElementById('addedTxt').textContent = data.addedAt ? ('تاريخ الإضافة: '+data.addedAt) : '—';
+
+  // أزرار
+  document.getElementById('goBack').onclick = ()=> history.length > 1 ? history.back() : (location.href='inspirers.html');
+  document.getElementById('copyLink').onclick = async ()=>{
+    const url = new URL(location.href);
+    // اختياري: ضيف سلاج للتتبع
+    if(data.slug) url.searchParams.set('m', data.slug);
+    try{
+      await navigator.clipboard.writeText(url.toString());
+      alert('تم نسخ الرابط.');
+    }catch{
+      prompt('انسخ الرابط:', url.toString());
+    }
+  };
+
+  // إذا وصلنا عبر رابط فيه ?m=slug وحاب تُطابق مستقبلاً، تقدر تضيف من هنا
+})();
+</script>
+
+</body>
+</html>

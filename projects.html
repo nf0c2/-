@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>فكرتي | المشاريع</title>
+  <style>
+    :root{--brown:#6e4e37;--sand:#c2a782;--light:#faf8f5;--ink:#1e1e1e;--shadow:0 10px 25px rgba(0,0,0,.08);--radius:16px}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Cairo",sans-serif;background:linear-gradient(160deg,#fff,var(--light) 40%,#f4efe9 100%);color:#222;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    a{text-decoration:none;color:inherit}
+
+    /* ===== Header موحّد (Sticky) ===== */
+    header{
+      position:sticky; top:0; z-index:100; background:#fff;
+      box-shadow:0 3px 10px rgba(0,0,0,.08);
+      border-radius:14px;
+      margin:10px 12px;
+    }
+    .nav-container{
+      max-width:1200px;margin:auto;padding:12px 25px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px
+    }
+    .main-logo{width:220px;height:auto;transition:.3s;flex:0 0 auto}
+    .main-logo:hover{transform:scale(1.05)}
+    nav{flex:1 1 auto;min-width:0}
+    nav ul{display:flex;gap:28px;list-style:none;align-items:center;justify-content:flex-end}
+    nav a{color:var(--brown);font-weight:700;transition:.2s;white-space:nowrap}
+    nav a:hover,nav a.active{color:#b17d57}
+
+    /* زر ودرج الجوال (560px–860px) */
+    #menuToggle{
+      display:none;border:1px solid #eadfce;background:#fff;color:#6e4e37;
+      padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer
+    }
+    @media (max-width:860px){
+      #menuToggle{ display:inline-block; margin-inline-start:10px }
+      header nav ul{
+        position:fixed; inset:64px 0 0 auto; width:88%; max-width:360px; background:#fff;
+        box-shadow:0 20px 50px rgba(0,0,0,.18); padding:18px;
+        border-top-left-radius:16px; border-bottom-left-radius:16px;
+        display:flex; flex-direction:column; gap:14px;
+        transform:translateX(110%); transition:transform .25s ease; z-index:9999
+      }
+      header nav ul.open{ transform:none }
+      body.no-scroll{ overflow:hidden }
+    }
+
+    /* ===== العنوان والوصف ===== */
+    .page-title{text-align:center;color:var(--brown);font-size:30px;font-weight:800;margin:60px auto 10px;padding:0 20px}
+    .page-sub{color:#555;text-align:center;max-width:760px;margin:0 auto 30px;line-height:1.8;padding:0 20px}
+
+    /* ===== Unified Filter Bar ===== */
+    .filter-bar{
+      max-width:1200px;margin:0 auto 25px;padding:12px;
+      background:#fff;border:1px solid #eadfce;border-radius:18px;box-shadow:var(--shadow)
+    }
+    .filter-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .search{flex:1;min-width:220px;padding:12px 14px;border:1px solid #ddd;border-radius:12px;font-size:15px;outline:none;transition:.3s;background:#fff}
+    .search:focus{border-color:var(--sand);box-shadow:0 0 0 3px rgba(194,167,130,.25)}
+    .sel{padding:12px 14px;border:1px solid #ddd;border-radius:12px;background:#fff}
+    .count{margin-inline-start:auto;color:#666;font-size:14px;padding:0 4px}
+
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{background:#fff;border:1px solid #eadfce;color:var(--brown);border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer;transition:.25s}
+    .chip.active,.chip:hover{background:#f9f3ed}
+
+    /* ===== Grid ===== */
+    .grid{
+      max-width:1200px;margin:0 auto 100px;
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:24px;padding:0 20px
+    }
+    .card{
+      background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;
+      opacity:0;transform:translateY(16px);transition:transform .25s ease, box-shadow .25s ease, opacity .8s ease;will-change:transform
+    }
+    .card.visible{opacity:1;transform:translateY(0)}
+    .card:hover{transform:translateY(-6px) rotateX(.6deg) rotateY(-.6deg);box-shadow:0 16px 34px rgba(0,0,0,.12)}
+    .no-img,.thumb{width:100%;height:170px;display:flex;align-items:center;justify-content:center}
+    .no-img{background:#eee;color:#aaa;font-size:14px}
+    .thumb img{width:100%;height:170px;object-fit:cover;display:block}
+
+    .content{padding:16px}
+    .content h3{font-size:18px;color:var(--brown);margin-bottom:6px}
+    .content p{font-size:14px;color:#444;line-height:1.7;margin-bottom:8px}
+    .meta{font-size:13px;color:#666}
+    .tag{background:var(--sand);color:#fff;padding:5px 12px;border-radius:50px;font-size:12px;display:inline-block;margin-top:8px}
+
+    /* Rating */
+    .rate{display:flex;align-items:center;gap:8px;margin-top:10px}
+    .stars{--val:0;position:relative;inline-size:110px;block-size:18px;
+      -webkit-mask:linear-gradient(90deg,#000 var(--w,0%),transparent 0),url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="110" height="18" viewBox="0 0 110 18"><g fill="%23000"><path d="M9 0l2.2 5h5.3l-4.2 3.1 1.6 5L9 11 4.1 13.1l1.6-5L1.5 5h5.3L9 0z"/><use xlink:href="%23s" x="22"/><use xlink:href="%23s" x="44"/><use xlink:href="%23s" x="66"/><use xlink:href="%23s" x="88"/></g><defs><path id="s" d="M9 0l2.2 5h5.3l-4.2 3.1 1.6 5L9 11 4.1 13.1l1.6-5L1.5 5h5.3L9 0z"/></defs></svg>') no-repeat center/contain;
+      background:linear-gradient(90deg,#f1c40f,#f39c12)
+    }
+    .rate b{font-size:12px;color:#6b6b6b}
+
+    footer{background:#f8f5f2;text-align:center;padding:25px 15px;border-top:1px solid #ddd;color:#5e4b3c;font-size:14px}
+    footer strong{color:var(--brown)}
+
+    .reveal{opacity:0;transform:translateY(30px);transition:all .8s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* ===== تحسينات الشاشات ===== */
+    @media (max-width:900px){
+      .filter-row{flex-wrap:wrap; gap:8px}
+      .search,.sel{flex:1 1 100%}
+    }
+    @media (max-width:700px){
+      .main-logo{width:170px}
+      nav ul{gap:16px; flex-wrap:wrap}
+      .page-title{font-size:24px; margin:36px auto 8px}
+      .page-sub{font-size:14px; margin-bottom:18px}
+      .grid{gap:16px}
+      .no-img,.thumb{height:150px}
+      .content{padding:14px}
+      .content h3{font-size:16px}
+      .content p{font-size:13px; line-height:1.6}
+      .rate{gap:6px}
+      .tag{padding:4px 10px; font-size:11px}
+    }
+    @media (hover:none){ .card:hover{transform:none; box-shadow:var(--shadow)} }
+    @media (min-width:701px){ .filter-bar{position:sticky; top:70px; z-index:5} }
+    @media (max-width:380px){ .chips{gap:6px} .chip{padding:6px 10px; font-size:12px} }
+
+    /* ===== Mobile header ≤560px: شعار أصغر + كل الروابط بسطر واحد ===== */
+    @media (max-width:560px){
+      header{ margin:6px }
+      .nav-container{ padding:8px 10px; gap:6px; justify-content:space-between }
+      .main-logo{ width:clamp(66px,20vw,90px); margin-inline-start:2px }
+
+      /* عطّل الدرج هنا */
+      header nav ul{
+        position: static !important; inset: auto !important; width: auto !important; max-width: none !important;
+        background: transparent !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important;
+        flex-direction: row !important; transform: none !important;
+      }
+      #menuToggle{ display:none !important }
+      body.no-scroll{ overflow:auto !important }
+
+      nav{ flex:1 1 auto; min-width:0 }
+      nav ul{ gap:6px; flex-wrap:nowrap; justify-content:flex-end; overflow:hidden; word-spacing:-2px }
+      nav li{ flex:0 0 auto }
+      nav a{ font-size:clamp(9.5px,2.35vw,10.5px); font-weight:800; line-height:1; letter-spacing:-.2px }
+    }
+    @media (max-width:380px){
+      nav ul{ gap:4px }
+      nav a{ font-size:clamp(9px,2.2vw,10px) }
+    }
+
+    /* ضمان قيمة افتراضية لعرض تعبئة النجوم */
+    .stars{--w:0%}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-container">
+    <a href="index.html"><img src="assets/svg/logo-Kittl.svg" class="main-logo" alt="شعار فكرتي"></a>
+    <nav>
+      <ul>
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="projects.html" class="active">المشاريع</a></li>
+        <li><a href="inspirers.html">الملهمين</a></li>
+        <li><a href="services.html">خدماتنا</a></li>
+        <li><a href="about.html">من&#8239;نحن</a></li>
+        <li><a href="contact.html">تواصل&#8239;معنا</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<h1 class="page-title">شارك مشروعك، احكِ قصتك، وابدأ من فكرتك</h1>
+
+<section class="filter-bar reveal" id="filtersWrap">
+  <div class="filter-row">
+    <input type="text" id="searchInput" class="search" placeholder="ابحث باسم المشروع أو الكلمة المفتاحية...">
+    <select id="typeSelect" class="sel">
+      <option value="all">جميع التخصصات</option>
+      <option value="تقني">تقني</option>
+      <option value="هندسي">هندسي</option>
+      <option value="بيئي">بيئي</option>
+      <option value="صحي">صحي</option>
+      <option value="اقتصادي">اقتصادي</option>
+      <option value="اجتماعي">اجتماعي</option>
+      <option value="منصات رقمية">منصات رقمية</option>
+    </select>
+    <select id="yearSelect" class="sel">
+      <option value="all">كل السنوات</option>
+      <option>2025</option><option>2024</option><option>2023</option><option>2022</option>
+    </select>
+    <select id="rateMin" class="sel" title="الحد الأدنى للتقييم">
+      <option value="0">الكل (أي تقييم)</option>
+      <option value="5">5.0+ ⭐</option>
+      <option value="4.5">4.5+ ⭐</option>
+      <option value="4">4.0+ ⭐</option>
+      <option value="3.5">3.5+ ⭐</option>
+    </select>
+    <select id="sortBy" class="sel" title="ترتيب">
+      <option value="recent">الأحدث أولاً</option>
+      <option value="rating">الأعلى تقييماً</option>
+      <option value="name">أبجدياً</option>
+    </select>
+    <div class="count" id="countLabel">— مشروع</div>
+  </div>
+  <div class="chips" id="quickChips">
+    <span class="chip" data-chip="developable">قابل للتطوير</span>
+    <span class="chip" data-chip="completed">مكتمل</span>
+  </div>
+</section>
+
+<section class="grid" id="projectsGrid"></section>
+
+<footer>
+  <p>© 2025 منصة <strong>فكرتي</strong> — تم التطوير بواسطة <strong>م. عبدالله أيمن اليوبي</strong></p>
+</footer>
+
+<script>
+/* ===== زر وقائمة الجوال (الـCSS يتحكم بالتصرّف حسب المقاس) ===== */
+(function(){
+  var header = document.querySelector('header .nav-container');
+  var list   = document.querySelector('header nav ul');
+  if(header && list && !document.getElementById('menuToggle')){
+    var btn = document.createElement('button');
+    btn.id='menuToggle'; btn.type='button'; btn.textContent='القائمة';
+    var logo = header.querySelector('.main-logo');
+    if(logo && logo.parentNode===header){ header.insertBefore(btn, logo.nextSibling); }
+    else{ header.insertBefore(btn, header.firstChild); }
+
+    btn.addEventListener('click', function(){
+      list.classList.toggle('open');
+      document.body.classList.toggle('no-scroll', list.classList.contains('open'));
+    });
+    list.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        list.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+      });
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='Escape'){ list.classList.remove('open'); document.body.classList.remove('no-scroll'); }
+    });
+    document.addEventListener('click', function(e){
+      if(!header.contains(e.target)){ list.classList.remove('open'); document.body.classList.remove('no-scroll'); }
+    });
+  }
+})();
+
+/* ===== بيانات المشاريع ===== */
+const projects = [
+  {id:"smart-parking", name:"نظام ذكي لإدارة المواقف", type:"تقني", year:2024, supervisor:"د. عبدالرحمن المزروعي", desc:"مشروع يستخدم حساسات وكاميرات للتعرف على المواقف الشاغرة داخل الحرم الجامعي.", members:["خالد الجاسر","نورة البقمي"], developable:true, rating:4.7, img:"https://images.unsplash.com/photo-1503736334956-4c8f8e92946d"},
+  {id:"pipe-robot", name:"روبوت فحص الأنابيب الصناعية", type:"هندسي", year:2023, supervisor:"দ. مازن بخاري".replace("দ","د"), desc:"روبوت مخصص لتفقد أنابيب المصانع واكتشاف التسربات بدقة عالية.", members:["محمد الزهراني","فهد عسيري"], developable:false, rating:4.1, img:""},
+  {id:"smart-farm", name:"نظام الزراعة الذكي", type:"بيئي", year:2025, supervisor:"د. يوسف الفيفي", desc:"تحكم ذكي بمعدلات الري استنادًا إلى بيانات الطقس والرطوبة.", members:["ريم المطيري","فيصل الرشيد"], developable:true, rating:4.8, img:""},
+  {id:"medical-ai", name:"تحليل الأشعة بالذكاء الاصطناعي", type:"صحي", year:2023, supervisor:"د. بندر السلمي", desc:"نموذج ذكاء اصطناعي يساهم في تسريع تشخيص أمراض الصدر.", members:["أحمد الحربي","نورة القحطاني"], developable:false, rating:4.3, img:""},
+  {id:"market-ai", name:"تحليل الأسواق الذكي", type:"اقتصادي", year:2024, supervisor:"د. خالد الحربي", desc:"خوارزمية تتنبأ بالاتجاهات السوقية استناداً إلى بيانات التداول.", members:["فيصل الرشيد","عبدالله الحسن"], developable:true, rating:4.6, img:"https://images.unsplash.com/photo-1591696205602-2f950c417cb9"},
+  {id:"volunteer-app", name:"تطبيق التطوع الذكي", type:"اجتماعي", year:2022, supervisor:"د. منى الغامدي", desc:"تطبيق يربط المتطوعين بالجهات الخيرية ويوفر نظام نقاط تحفيزي.", members:["رهف المطيري","سلمان الحربي"], developable:false, rating:3.9, img:"https://images.unsplash.com/photo-1556740749-887f6717d7e4"},
+  {id:"campus-platform", name:"منصة الجامعة الموحّدة", type:"منصات رقمية", year:2025, supervisor:"د. طارق العبدالله", desc:"منصة تجمع الخدمات الأكاديمية والأنشطة الجامعية في واجهة واحدة.", members:["عبدالرحمن العوفي","سارة العمري"], developable:true, rating:4.9, img:"https://images.unsplash.com/photo-1593642532744-d377ab507dc8"},
+  {id:"air-purifier", name:"جهاز تنقية هواء متنقل", type:"هندسي", year:2023, supervisor:"د. حمد الغامدي", desc:"ابتكار هندسي لتنقية الهواء من الملوثات المحمولة.", members:["سارة العمري","عبدالعزيز الشهري"], developable:false, rating:4.0, img:""},
+  {id:"eco-energy", name:"نظام إدارة الطاقة المنزلية", type:"بيئي", year:2024, supervisor:"د. ليلى العمودي", desc:"لوحة تحكم ذكية لترشيد استهلاك الكهرباء عبر مراقبة فورية للأجهزة.", members:["مشعل القرني","فاطمة الغامدي"], developable:true, rating:4.4, img:"https://images.unsplash.com/photo-1509395176047-4a66953fd231"},
+  {id:"assist-ai", name:"المساعد الأكاديمي الذكي", type:"تقني", year:2025, supervisor:"د. هند الزهراني", desc:"روبوت محادثة يساعد الطلاب في تنظيم الجداول وإدارة المشاريع.", members:["مها العتيبي","عبدالله السبيعي"], developable:true, rating:4.6, img:"https://images.unsplash.com/photo-1504384308090-c894fdcc538d"},
+  {id:"heritage-map", name:"خريطة المواقع التراثية", type:"منصات رقمية", year:2022, supervisor:"د. فهد الحازمي", desc:"منصة تفاعلية توثق المواقع التراثية في المملكة.", members:["أحمد القاضي","رهف الصاعدي"], developable:false, rating:3.7, img:""},
+  {id:"health-station", name:"نقطة فحص صحية متنقلة", type:"صحي", year:2024, supervisor:"د. رانيا بخيت", desc:"كشك صحي مجهز بأجهزة لقياس العلامات الحيوية.", members:["سلمان القحطاني","آية الأنصاري"], developable:true, rating:4.2, img:"https://images.unsplash.com/photo-1629909613654-28e377c37a9d"}
+];
+
+/* ===== عناصر ===== */
+const grid = document.getElementById("projectsGrid");
+const searchInput = document.getElementById("searchInput");
+const typeSelect = document.getElementById("typeSelect");
+const yearSelect = document.getElementById("yearSelect");
+const rateMin = document.getElementById("rateMin");
+const sortBy = document.getElementById("sortBy");
+const chips = document.getElementById("quickChips");
+const countLabel = document.getElementById("countLabel");
+
+/* ===== Reveal ===== */
+const onReveal = () => {
+  document.querySelectorAll('.reveal, .card').forEach(el=>{
+    const r = el.getBoundingClientRect();
+    if(r.top < innerHeight - 100) el.classList.add('visible');
+  });
+};
+addEventListener('scroll', onReveal);
+addEventListener('load', onReveal);
+
+/* ===== Debounce ===== */
+let t; const debounce = (fn,d=200)=> (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), d); };
+
+/* ===== نجوم التقييم ===== */
+function starWidth(r){ const pct=Math.max(0,Math.min(5,r||0))/5*100; return pct.toFixed(1)+'%'; }
+
+/* ===== كارت مشروع ===== */
+function createCard(p){
+  const card = document.createElement("article");
+  card.className = "card";
+  card.onclick = () => {
+    localStorage.setItem("selectedProject", JSON.stringify({
+      title:p.name, desc:p.desc, supervisor:p.supervisor, members:p.members.join("، "),
+      year:p.year, status:p.developable ? "قابل للتطوير" : "مكتمل",
+      award:p.award||"—", upgradeable:!!p.developable, img:p.img
+    }));
+    location.href = "project.html";
+  };
+  const imgPart = p.img && p.img.trim()!=="" ? `<div class="thumb"><img data-src="${p.img}" alt="${p.name}" loading="lazy"></div>` : `<div class="no-img">لا توجد صورة</div>`;
+  card.innerHTML = `
+    ${imgPart}
+    <div class="content">
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <div class="meta">👥 ${p.members.join("، ")}<br>📅 ${p.year} • ${p.supervisor}</div>
+      <div class="rate">
+        <span class="stars" style="--w:${starWidth(p.rating)}"></span>
+        <b>${(p.rating ?? 0).toFixed(1)}</b>
+        <span class="tag">${p.developable ? "قابل للتطوير" : "مكتمل"}</span>
+      </div>
+    </div>`;
+  return card;
+}
+
+/* ===== عدّاد ===== */
+function updateCount(n){
+  countLabel.textContent = n===0 ? "لا توجد نتائج" : `${n.toLocaleString('ar')} مشروع`;
+}
+
+/* ===== Chips ===== */
+let chipState = { developable:false, completed:false };
+
+/* ===== فلترة وترتيب ===== */
+function applyFilters(){
+  const term = (searchInput.value||"").toLowerCase().trim();
+  const t = typeSelect.value;
+  const y = yearSelect.value;
+  const rMin = parseFloat(rateMin.value);
+
+  let list = projects
+    .filter(p => (t==="all" || p.type===t))
+    .filter(p => (y==="all" || String(p.year)===y))
+    .filter(p => (p.rating??0) >= rMin)
+    .filter(p => {
+      if(!term) return true;
+      return p.name.toLowerCase().includes(term)
+          || p.desc.toLowerCase().includes(term)
+          || (p.supervisor||"").toLowerCase().includes(term)
+          || p.members.join(" ").toLowerCase().includes(term);
+    });
+
+  if(chipState.developable) list = list.filter(p=>p.developable===true);
+  if(chipState.completed)   list = list.filter(p=>p.developable===false);
+
+  if(sortBy.value==='recent'){ list.sort((a,b)=> b.year - a.year || (b.rating??0)-(a.rating??0)); }
+  else if(sortBy.value==='rating'){ list.sort((a,b)=> (b.rating??0)-(a.rating??0) || b.year - a.year); }
+  else if(sortBy.value==='name'){ list.sort((a,b)=> a.name.localeCompare(b.name,'ar')); }
+
+  grid.innerHTML = "";
+  list.forEach((p,i)=>{
+    const card = createCard(p);
+    grid.appendChild(card);
+    setTimeout(()=>card.classList.add('visible'), 50+i*30);
+  });
+  updateCount(list.length);
+  lazyLoadImages();
+  onReveal();
+}
+
+/* ===== Lazy load ===== */
+let io;
+function lazyLoadImages(){
+  if(io) io.disconnect();
+  const imgs = grid.querySelectorAll('img[data-src]');
+  io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.removeAttribute('data-src');
+        io.unobserve(img);
+      }
+    });
+  },{rootMargin:"200px"});
+  imgs.forEach(img=>io.observe(img));
+}
+
+/* ===== تفعيل الشيبس ===== */
+document.getElementById('quickChips').addEventListener('click',(e)=>{
+  const el = e.target.closest('.chip'); if(!el) return;
+  const k = el.dataset.chip;
+  if(k==='developable'){ chipState.developable=!chipState.developable; el.classList.toggle('active'); }
+  if(k==='completed'){   chipState.completed=!chipState.completed;   el.classList.toggle('active'); }
+  applyFilters();
+});
+
+/* ===== استماع ===== */
+searchInput.addEventListener("input", debounce(applyFilters));
+[typeSelect,yearSelect,rateMin,sortBy].forEach(el=> el.addEventListener("change", applyFilters));
+
+/* ===== بدء ===== */
+window.addEventListener('load', ()=>{
+  document.getElementById('filtersWrap').classList.add('visible');
+  applyFilters();
+  onReveal();
+});
+</script>
+
+<!-- إلغاء تأثير الرفع بالهوفر على الأجهزة اللمسية فقط -->
+<script>
+(function(){
+  const isTouch = matchMedia('(hover:none)').matches;
+  if(isTouch){
+    document.addEventListener('pointerover', e=>{
+      const card = e.target.closest('.card');
+      if(card) card.style.transform = 'none';
+    }, {passive:true});
+  }
+})();
+</script>
+
+</body>
+</html>

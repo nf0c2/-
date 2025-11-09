@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>فكرتي | من نحن</title>
+  <style>
+    :root{
+      --brown:#6e4e37; --sand:#c2a782; --light:#faf8f5; --ink:#1e1e1e;
+      --radius:16px; --shadow:0 10px 25px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Cairo",sans-serif;background:linear-gradient(160deg,#fff,var(--light) 40%,#f4efe9 100%);color:#222;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    a{color:inherit;text-decoration:none}
+
+    /* ===== Header موحّد (Sticky) ===== */
+    header{
+      position:sticky; top:0; z-index:100; background:#fff;
+      box-shadow:0 3px 10px rgba(0,0,0,.08);
+      border-radius:14px; margin:10px 12px;
+    }
+    .nav-container{
+      max-width:1200px;margin:auto;padding:12px 25px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px
+    }
+    .main-logo{width:220px;height:auto;transition:.3s;flex:0 0 auto}
+    .main-logo:hover{transform:scale(1.05)}
+    nav{flex:1 1 auto;min-width:0}
+    nav ul{display:flex;gap:28px;list-style:none;align-items:center;justify-content:flex-end}
+    nav a{color:var(--brown);font-weight:800;transition:.25s;white-space:nowrap}
+    nav a:hover, nav a.active{color:#b17d57}
+
+    /* زر ودرج (560–860px) */
+    #menuToggle{
+      display:none;border:1px solid #eadfce;background:#fff;color:#6e4e37;
+      padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer
+    }
+    @media (max-width:860px){
+      #menuToggle{ display:inline-block; margin-inline-start:10px }
+      header nav ul{
+        position:fixed; inset:64px 0 0 auto; width:88%; max-width:360px; background:#fff;
+        box-shadow:0 20px 50px rgba(0,0,0,.18); padding:18px;
+        border-top-left-radius:16px; border-bottom-left-radius:16px;
+        display:flex; flex-direction:column; gap:14px;
+        transform:translateX(110%); transition:transform .25s ease; z-index:9999
+      }
+      header nav ul.open{ transform:none }
+      body.no-scroll{ overflow:hidden }
+    }
+
+    /* ===== Hero ===== */
+    .hero{padding:78px 20px 50px;text-align:center}
+    .hero .wrap{max-width:1100px;margin:auto}
+    .hero h1{font-size:clamp(30px,5.5vw,56px);font-weight:1000;letter-spacing:.2px;color:var(--ink)}
+    .hero p{margin-top:10px;color:#444;font-size:clamp(14px,1.9vw,18px)}
+
+    /* ===== Sections ===== */
+    .section{max-width:1200px;margin:50px auto;padding:0 22px}
+    .grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center}
+    .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+    .title{color:var(--brown);font-size:22px;margin-bottom:10px}
+    .text{color:#444;line-height:1.9;font-size:15.5px;text-align:justify}
+
+    .img-wrap{border-radius:18px;overflow:hidden;box-shadow:var(--shadow);background:#fff}
+    .img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* قيمنا */
+    .values{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+    .value{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:18px}
+    .value h3{color:var(--brown);font-size:18px;margin-bottom:6px}
+    .value p{color:#444;line-height:1.9;font-size:14.5px}
+
+    /* كيف نختلف */
+    .diff{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .diff .box{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:18px}
+    .pill{display:inline-block;background:#f3ede6;color:#6e4e37;border-radius:999px;padding:6px 10px;font-size:12px;margin-bottom:8px}
+
+    /* Timeline */
+    .timeline{position:relative;margin-top:6px}
+    .timeline::before{content:"";position:absolute;right:8px;top:0;bottom:0;width:2px;background:#eadfce}
+    .t-step{position:relative;background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px;margin:12px 0}
+    .t-step::before{content:"";position:absolute;right:-1px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--sand);box-shadow:0 0 0 6px #f6efe8}
+
+    /* نموذج العمل (صورة واحدة) */
+    .bm{display:grid;grid-template-columns:1fr;gap:16px}
+    .bm .note{color:#666;font-size:13px}
+
+    /* فريق */
+    .team{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .member{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:16px;display:flex;gap:12px;align-items:center}
+    .ava{min-width:54px;min-height:54px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;background:linear-gradient(135deg,#b08968,#6e4e37)}
+    .member h4{color:var(--brown);margin-bottom:4px}
+    .member p{color:#666;font-size:13.5px}
+
+    /* CTA */
+    .cta{
+      background:linear-gradient(100deg,var(--brown),var(--sand));color:#fff;border-radius:20px;box-shadow:var(--shadow);
+      padding:26px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px
+    }
+    .cta h3{font-size:20px}
+    .cta a{background:#fff;color:#5b3d2d;border:none;border-radius:999px;padding:10px 16px;font-weight:800}
+
+    /* Footer */
+    footer{background:#f8f5f2;text-align:center;padding:25px 15px;border-top:1px solid #ddd;color:#5e4b3c;font-size:14px;margin-top:70px}
+    footer strong{color:var(--brown)}
+
+    /* Reveal */
+    .reveal{transform:translateY(12px);opacity:0;transition:600ms ease}
+    .in{transform:none;opacity:1}
+
+    @media (max-width:980px){ .grid-2{grid-template-columns:1fr} }
+
+    /* ===== Mobile header ≤560px: شعار أصغر + كل الروابط بسطر واحد بدون درج ===== */
+    @media (max-width:560px){
+      header{ margin:6px }
+      .nav-container{ padding:8px 10px; gap:6px; justify-content:space-between }
+      .main-logo{ width:clamp(66px,20vw,90px); margin-inline-start:2px }
+
+      /* عطّل الدرج هنا */
+      header nav ul{
+        position: static !important; inset: auto !important; width: auto !important; max-width: none !important;
+        background: transparent !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important;
+        flex-direction: row !important; transform: none !important;
+      }
+      #menuToggle{ display:none !important }
+      body.no-scroll{ overflow:auto !important }
+
+      nav{ flex:1 1 auto; min-width:0 }
+      nav ul{ gap:6px; flex-wrap:nowrap; justify-content:flex-end; overflow:hidden; word-spacing:-2px }
+      nav li{ flex:0 0 auto }
+      nav a{ font-size:clamp(9.5px,2.35vw,10.5px); font-weight:800; line-height:1; letter-spacing:-.2px }
+    }
+    @media (max-width:380px){
+      nav ul{ gap:4px }
+      nav a{ font-size:clamp(9px,2.2vw,10px) }
+    }
+  </style>
+
+  <!-- ===== Responsive Bundle (أساس عام إضافي) ===== -->
+  <style id="responsive-bundle">
+    :root{ --max:1200px; --pad:16px }
+    .wrap{ max-width:var(--max); margin:auto; padding-inline:var(--pad) }
+    h1{ font-size:clamp(22px,5vw,38px); line-height:1.2 }
+    h2{ font-size:clamp(18px,4vw,28px) }
+    h3{ font-size:clamp(16px,3.2vw,22px) }
+    p,li{ font-size:clamp(14px,3.4vw,16px) }
+    @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-container">
+    <a href="index.html"><img src="assets/svg/logo-Kittl.svg" class="main-logo" alt="شعار فكرتي" /></a>
+    <nav>
+      <ul>
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="projects.html">المشاريع</a></li>
+        <li><a href="inspirers.html">الملهمين</a></li>
+        <li><a href="services.html">خدماتنا</a></li>
+        <li><a href="about.html" class="active">من نحن</a></li>
+        <li><a href="contact.html">تواصل معنا</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>من نحن</h1>
+    <p>منصة طلابية تصنع الروابط الصحيحة بين الفكرة والمهارة… لتتحول المشاريع الجامعية إلى أثر.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="grid-2">
+    <article class="card reveal">
+      <h2 class="title">رسالتنا</h2>
+      <p class="text">
+        تمكين طلاب الجامعات من التعاون البيني عبر واجهة بسيطة تجمع الأفكار، المهارات،
+        والفعاليات في مكان واحد—مع توثيق واضح للإنجازات قابل للمشاركة.
+      </p>
+      <br/>
+      <h2 class="title">رؤيتنا</h2>
+      <p class="text">
+        أن تكون <strong>فكرتي</strong> بوابة السعودية الجامعية للأثر: كل مشروع يجد فريقه،
+        وكل إنجاز يجد طريقه للظهور.
+      </p>
+      <br/>
+      <h2 class="title">هدفنا الأسمى</h2>
+      <p class="text">إبراز القيمة الحقيقية لجهد الطالب الجامعي وتحويله إلى إنجاز موثّق قابل للتطوير.</p>
+    </article>
+
+    <div class="img-wrap reveal" style="aspect-ratio:4/3">
+      <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b" alt="تعاون طلابي">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="grid-2">
+    <div class="img-wrap reveal" style="aspect-ratio:4/3">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d" alt="عمل جماعي">
+    </div>
+    <article class="card reveal">
+      <h2 class="title">لماذا وُجدت فكرتي؟</h2>
+      <p class="text">
+        مشاريع كثيرة تذوب بعد المناقشة النهائية لأن الفريق لم يتكوّن بالشكل الصحيح،
+        أو لأن القنوات مشتتة. فكرتي ترتّب كل هذا: تعرض الفكرة، تقترح شركاء،
+        تنظّم خطوات التنفيذ، وتوثّق النتيجة.
+      </p>
+      <br/>
+      <div class="values">
+        <div class="value"><h3>بساطة</h3><p>واجهات واضحة، نماذج قصيرة، نتائج ملموسة.</p></div>
+        <div class="value"><h3>موثوقية</h3><p>ملفات مشاريع قابلة للمشاركة والرجوع لها لاحقًا.</p></div>
+        <div class="value"><h3>تعاون</h3><p>مطابقة مهارات عابرة للتخصصات لبناء فرق قوية.</p></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <article class="card reveal" style="margin-bottom:16px">
+    <h2 class="title">كيف نختلف؟</h2>
+    <p class="text">نركّز على مسارين أساسيين: <strong>تشكيل الفرق بسرعة</strong> و<strong>التوثيق الذكي</strong>. النتيجة؟ جودة أعلى وزمن تنفيذ أقل.</p>
+  </article>
+  <div class="diff">
+    <div class="box reveal">
+      <span class="pill">مطابقة مهارات</span>
+      <p class="text">اقتراح شركاء بمهارات مكمّلة بناءً على وصف الفكرة والكلمات المفتاحية.</p>
+    </div>
+    <div class="box reveal">
+      <span class="pill">لوحة تقدّم</span>
+      <p class="text">تقسيم المهام، مواعيد، ومؤشرات بسيطة تبيّن أين وصل الفريق.</p>
+    </div>
+    <div class="box reveal">
+      <span class="pill">ملف مشروع</span>
+      <p class="text">رابط واحد يضم الوصف، النتائج، الوسائط، وروابط النشر أو الشيفرة.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <article class="card reveal">
+    <h2 class="title">نموذج العمل</h2>
+    <div class="bm">
+      <div class="img-wrap" style="aspect-ratio:16/9">
+        <!-- استبدل المسار أدناه بصورة الـ BMC المعتمدة لديك -->
+        <img src="assets/img/business-model-canvas-ar.png" alt="Business Model Canvas - Arabic">
+      </div>
+      <small class="note">* صورة نموذج العمل القياسي (9 مربعات). غيّر الصورة لاحقًا إذا لزم.</small>
+    </div>
+  </article>
+</section>
+
+<section class="section">
+  <div class="cta reveal">
+    <h3>جاهز تبني فريقك؟ ارفع فكرتك الآن وابدأ.</h3>
+    <div>
+      <a href="projects.html">ابدأ مشروعك</a>
+      <a href="inspirers.html" style="margin-right:8px;background:transparent;border:1px solid rgba(255,255,255,.8);color:#fff">استكشف الملهمين</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 منصة <strong>فكرتي</strong> — تم التطوير بواسطة <strong>م. عبدالله أيمن اليوبي</strong></p>
+</footer>
+
+<!-- Reveal on scroll -->
+<script>
+(function(){
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+})();
+</script>
+
+<!-- Header drawer + mobile tweaks -->
+<script>
+(function(){
+  var header = document.querySelector('header .nav-container');
+  var list   = document.querySelector('header nav ul');
+  if(header && list && !document.getElementById('menuToggle')){
+    var btn = document.createElement('button');
+    btn.id='menuToggle'; btn.type='button'; btn.textContent='القائمة';
+    var logo = header.querySelector('.main-logo');
+    if(logo && logo.parentNode===header){ header.insertBefore(btn, logo.nextSibling); }
+    else{ header.insertBefore(btn, header.firstChild); }
+
+    btn.addEventListener('click', function(){
+      list.classList.toggle('open');
+      document.body.classList.toggle('no-scroll', list.classList.contains('open'));
+    });
+    list.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        list.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+      });
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='Escape'){ list.classList.remove('open'); document.body.classList.remove('no-scroll'); }
+    });
+    document.addEventListener('click', function(e){
+      if(!header.contains(e.target)){ list.classList.remove('open'); document.body.classList.remove('no-scroll'); }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
